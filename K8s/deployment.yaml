@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:    
+  name: northwind  
+spec:  
+  replicas: 1
+  selector:
+    matchLabels:
+      app: northwind
+  template:
+    metadata:      
+      labels:
+        app: northwind
+    spec:      
+      containers:
+      - env:
+        - name: NORTHWIND_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: northwinddb-secret
+              key: cs
+        - name: ASPNETCORE_URLS
+          value: "http://*:5000/"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        image: albertocsm/northwind:latest
+        imagePullPolicy: Always
+        name: northwind
